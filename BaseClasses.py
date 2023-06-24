@@ -21,7 +21,7 @@ from source.dungeon.RoomObject import RoomObject
 class World(object):
 
     def __init__(self, players, owShuffle, owCrossed, owMixed, shuffle, doorShuffle, logic, mode, swords, difficulty, difficulty_adjustments,
-                 timer, progressive, goal, algorithm, accessibility, shuffle_ganon, custom, customitemarray, hints):
+                 timer, progressive, goal, algorithm, accessibility, shuffle_ganon, custom, customitemarray, hints, seed_name, seed_notes):
         self.players = players
         self.teams = 1
         self.owShuffle = owShuffle.copy()
@@ -106,6 +106,8 @@ class World(object):
         self.fish = BabelFish()
         self.pot_contents = {}
         self.trolls = {}
+        self.seed_name = seed_name
+        self.seed_notes = seed_notes
 
         for player in range(1, players + 1):
             def set_player_attr(attr, val):
@@ -3112,6 +3114,11 @@ class Spoiler(object):
                          'triforcepool': self.world.treasure_hunt_total,
                          'code': {p: Settings.make_code(self.world, p) for p in range(1, self.world.players + 1)}
                          }
+        
+        if self.world.seed_name:
+            self.metadata['seed_name'] = self.world.seed_name
+        if self.world.seed_notes:
+            self.metadata['seed_notes'] = self.world.seed_notes
 
         for p in range(1, self.world.players + 1):
             from ItemList import set_default_triforce
@@ -3244,10 +3251,13 @@ class Spoiler(object):
             for k,v in self.metadata["versions"].items():
                 outfile.write((k + ' Version:').ljust(line_width) + '%s\n' % v)
             for player in range(1, self.world.players + 1):
+                if self.world.seed_name:
+                    outfile.write('Seed Name:'.ljust(line_width) + '%s\n' % self.metadata['seed_name'][player])
                 if self.world.players > 1:
                     outfile.write('\nPlayer %d: %s\n' % (player, self.world.get_player_names(player)))
                 outfile.write('Logic:'.ljust(line_width) + '%s\n' % self.metadata['logic'][player])
-
+                if self.world.seed_notes:
+                    outfile.write('Notes:'.ljust(line_width) + '%s\n' % self.metadata['seed_notes'][player])
     def meta_to_file(self, filename):
         def yn(flag):
             return 'Yes' if flag else 'No'
@@ -3264,6 +3274,8 @@ class Spoiler(object):
             for player in range(1, self.world.players + 1):
                 if self.world.players > 1:
                     outfile.write('\nPlayer %d: %s\n' % (player, self.world.get_player_names(player)))
+                if self.world.seed_name:
+                    outfile.write('Seed Name:'.ljust(line_width) + '%s\n' % self.metadata['seed_name'][player])
                 outfile.write('Settings Code:'.ljust(line_width) + '%s\n' % self.metadata["code"][player])
                 outfile.write('Logic:'.ljust(line_width) + '%s\n' % self.metadata['logic'][player])
                 outfile.write('Mode:'.ljust(line_width) + '%s\n' % self.metadata['mode'][player])
@@ -3325,7 +3337,9 @@ class Spoiler(object):
                 outfile.write('Enemy Damage:'.ljust(line_width) + '%s\n' % self.metadata['enemy_damage'][player])
                 outfile.write('Hints:'.ljust(line_width) + '%s\n' % yn(self.metadata['hints'][player]))
                 outfile.write('Race:'.ljust(line_width) + '%s\n' % yn(self.world.settings.world_rep['meta']['race']))
-            
+                if self.world.seed_notes:
+                    outfile.write('Notes:'.ljust(line_width) + '%s\n' % self.metadata['seed_notes'][player])
+
             if self.startinventory:
                 outfile.write('Starting Inventory:'.ljust(line_width))
                 outfile.write('\n'.ljust(line_width+1).join(self.startinventory) + '\n')

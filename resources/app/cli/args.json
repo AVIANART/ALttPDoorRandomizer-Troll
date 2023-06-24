@@ -607,5 +607,7 @@
   "trolls": {
     "action": "store_true",
     "type": "bool"
-  }
+  },
+  "seed_notes": {},
+  "seed_name": {}
 }

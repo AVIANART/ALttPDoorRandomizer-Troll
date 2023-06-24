@@ -102,7 +102,7 @@ def main(args, seed=None, fish=None):
         customized.adjust_args(args)
     world = World(args.multi, args.ow_shuffle, args.ow_crossed, args.ow_mixed, args.shuffle, args.door_shuffle, args.logic, args.mode, args.swords,
                   args.difficulty, args.item_functionality, args.timer, args.progressive, args.goal, args.algorithm,
-                  args.accessibility, args.shuffleganon, args.custom, args.customitemarray, args.hints)
+                  args.accessibility, args.shuffleganon, args.custom, args.customitemarray, args.hints, args.seed_name, args.seed_notes)
     world.customizer = customized if customized else None
     logger = logging.getLogger('')
     if seed is None:
@@ -191,7 +191,7 @@ def main(args, seed=None, fish=None):
             world.player_names[player].append(name)
     logger.info('')
     world.settings = CustomSettings()
-    world.settings.create_from_world(world, args.race)
+    world.settings.create_from_world(world, args.race, args.seed_name, args.seed_notes)
 
     outfilebase = f'OR_{args.outputname if args.outputname else world.seed}'
 
@@ -477,7 +477,7 @@ def copy_world(world):
     # ToDo: Not good yet
     ret = World(world.players, world.owShuffle, world.owCrossed, world.owMixed, world.shuffle, world.doorShuffle, world.logic, world.mode, world.swords,
                 world.difficulty, world.difficulty_adjustments, world.timer, world.progressive, world.goal, world.algorithm,
-                world.accessibility, world.shuffle_ganon, world.custom, world.customitemarray, world.hints)
+                world.accessibility, world.shuffle_ganon, world.custom, world.customitemarray, world.hints, world.seed_name, world.seed_notes)
     ret.teams = world.teams
     ret.player_names = copy.deepcopy(world.player_names)
     ret.remote_items = world.remote_items.copy()
@@ -658,7 +658,7 @@ def copy_world_premature(world, player):
     # ToDo: Not good yet
     ret = World(world.players, world.owShuffle, world.owCrossed, world.owMixed, world.shuffle, world.doorShuffle, world.logic, world.mode, world.swords,
                 world.difficulty, world.difficulty_adjustments, world.timer, world.progressive, world.goal, world.algorithm,
-                world.accessibility, world.shuffle_ganon, world.custom, world.customitemarray, world.hints)
+                world.accessibility, world.shuffle_ganon, world.custom, world.customitemarray, world.hints, world.seed_name, world.seed_notes)
     ret.teams = world.teams
     ret.player_names = copy.deepcopy(world.player_names)
     ret.remote_items = world.remote_items.copy()
